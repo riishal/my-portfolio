@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:glassmorphism/glassmorphism.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rishal/widget/about_section.dart';
 import 'package:rishal/widget/blog_section.dart';
 import 'package:rishal/widget/contact_section.dart';
+import 'package:rishal/widget/mobile_profile.dart';
 import 'package:rishal/widget/navbar.dart';
 import 'package:rishal/widget/portfolio_section.dart';
 import 'package:rishal/widget/resume_section.dart';
 import 'package:rishal/widget/side_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 1024;
+
     return Scaffold(
       backgroundColor: const Color(0xFF070707),
       body: Stack(
@@ -47,25 +53,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
 
           // Content
-          Row(
+          Column(
             children: [
-              // Sidebar - Only visible on larger screens
-              if (MediaQuery.of(context).size.width > 1024)
-                FadeInLeft(
-                  duration: const Duration(milliseconds: 800),
-                  child: const Sidebar(),
-                ),
-
-              // Main content
+              // Mobile Profile Header - Only visible on mobile
+              // if (isMobile) const MobileProfileHeader(),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: ElasticIn(
-                      duration: const Duration(milliseconds: 1200),
-                      child: _sections[_currentIndex],
+                child: Row(
+                  children: [
+                    // Sidebar - Only visible on larger screens
+                    if (!isMobile)
+                      FadeInLeft(
+                        duration: const Duration(milliseconds: 800),
+                        child: const Sidebar(),
+                      ),
+
+                    // Main content
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: ElasticIn(
+                            duration: const Duration(milliseconds: 1200),
+                            child: _sections[_currentIndex],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -112,3 +126,7 @@ class _DotsPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+// Mobile Profile Header Widget
+
+// Other sections (ResumeSection, PortfolioSection, etc.) remain unchanged

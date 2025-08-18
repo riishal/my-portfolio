@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rishal/widget/mobile_profile.dart';
 import 'service_card.dart';
 import 'testimonial_card.dart';
 import 'client_logo.dart';
@@ -11,6 +12,7 @@ class AboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 1024;
     return GlassmorphicContainer(
       height: MediaQuery.of(context).size.height * 1.8,
       width: double.infinity,
@@ -42,6 +44,7 @@ class AboutSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (isMobile) const ModernProfileHeader(),
               // Title with animated underline
               FadeInDown(
                 child: Column(
