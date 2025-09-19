@@ -468,7 +468,7 @@ class _HeroSectionState extends State<HeroSection>
           ),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: widget.isMobile ? 5 : 80,
+              horizontal: widget.isMobile ? 20 : 80,
               vertical: widget.isMobile ? 40 : 60,
             ),
             child: ClipRect(
