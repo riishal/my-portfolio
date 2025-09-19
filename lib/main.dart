@@ -1,25 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'screens/home_screen.dart';
+import 'package:rishal/screens/portfolio_home_page.dart';
+import 'package:rishal/utils/app_colors.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  void toggleTheme() {
+    setState(() {
+      AppColors.isDarkMode = !AppColors.isDarkMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomeScreen(),
-      title: 'Personal Portfolio',
+      title: 'Rishal Portfolio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        canvasColor: const Color(0xFF070707),
+        fontFamily: 'SF Pro Display',
+        scaffoldBackgroundColor: AppColors.background,
+        textTheme: TextTheme(
+          headlineLarge: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyMedium: TextStyle(color: AppColors.textSecondary),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.background,
+          iconTheme: IconThemeData(color: AppColors.accent),
+        ),
       ),
+      home: PortfolioHomePage(onThemeToggle: toggleTheme),
     );
   }
 }
