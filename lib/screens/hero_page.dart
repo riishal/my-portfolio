@@ -357,7 +357,7 @@ class _HeroSectionState extends State<HeroSection>
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage('assets/images/myprofile.png'),
+                    image: AssetImage('assets/images/rish.jpeg'),
                   ),
                   border: Border.all(
                     color: _imageHovered
@@ -368,7 +368,7 @@ class _HeroSectionState extends State<HeroSection>
                 ),
                 child: ClipOval(
                   child: Image.asset(
-                    'assets/images/myprofile.png',
+                    'assets/images/rish.jpeg',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       decoration: BoxDecoration(
