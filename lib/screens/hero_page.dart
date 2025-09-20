@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rishal/utils/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
 class HeroSection extends StatefulWidget {
@@ -28,6 +29,7 @@ class _HeroSectionState extends State<HeroSection>
   late Animation<double> _floatingAnimation;
 
   bool _imageHovered = false;
+  Offset _mousePosition = Offset.zero;
   List<String> _roles = [
     'Flutter Developer',
     'Mobile App Expert',
@@ -51,7 +53,7 @@ class _HeroSectionState extends State<HeroSection>
     );
 
     _backgroundController = AnimationController(
-      duration: Duration(seconds: 20),
+      duration: Duration(seconds: 15),
       vsync: this,
     );
 
@@ -127,24 +129,38 @@ class _HeroSectionState extends State<HeroSection>
   Widget _buildAnimatedBackground() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return AnimatedBuilder(
-          animation: _rotateAnimation,
-          builder: (context, child) {
-            return CustomPaint(
-              painter: GeometricBackgroundPainter(
-                rotation: _rotateAnimation.value,
-                color: AppColors.accent.withOpacity(0.1),
-              ),
-              size: Size(constraints.maxWidth, constraints.maxHeight),
-            );
-          },
+        return MouseRegion(
+          onHover: !widget.isMobile
+              ? (event) {
+                  setState(() {
+                    _mousePosition = event.localPosition;
+                  });
+                }
+              : null,
+          child: AnimatedBuilder(
+            animation: _rotateAnimation,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: ModernParticleBackgroundPainter(
+                  rotation: _rotateAnimation.value,
+                  mousePosition: _mousePosition,
+                  canvasSize: Size(constraints.maxWidth, constraints.maxHeight),
+                  color: AppColors.accent.withOpacity(
+                    widget.isMobile ? 0.04 : 0.06,
+                  ),
+                  isMobile: widget.isMobile,
+                ),
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+              );
+            },
+          ),
         );
       },
     );
   }
 
   Widget _buildModernSocialIcon(
-    IconData icon,
+    String icon,
     String tooltip,
     VoidCallback? onTap,
   ) {
@@ -159,8 +175,8 @@ class _HeroSectionState extends State<HeroSection>
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              width: 50,
-              height: 50,
+              width: widget.isMobile ? 44 : 50,
+              height: widget.isMobile ? 44 : 50,
               decoration: BoxDecoration(
                 gradient: isHovered
                     ? LinearGradient(
@@ -209,10 +225,13 @@ class _HeroSectionState extends State<HeroSection>
                 child: InkWell(
                   onTap: onTap,
                   borderRadius: BorderRadius.circular(25),
-                  child: Icon(
-                    icon,
-                    color: isHovered ? Colors.white : AppColors.accent,
-                    size: 24,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      icon,
+                      color: isHovered ? Colors.white : AppColors.accent,
+                      width: widget.isMobile ? 20 : 24,
+                      height: widget.isMobile ? 20 : 24,
+                    ),
                   ),
                 ),
               ),
@@ -246,10 +265,11 @@ class _HeroSectionState extends State<HeroSection>
 
         return Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               width: 4,
-              height: 24,
+              height: widget.isMobile ? 20 : 24,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.accent, AppColors.accent.withOpacity(0.3)],
@@ -260,16 +280,17 @@ class _HeroSectionState extends State<HeroSection>
             SizedBox(width: 12),
             Text(
               displayText,
+              textAlign: TextAlign.left,
               style: TextStyle(
                 color: AppColors.accent,
-                fontSize: widget.isMobile ? 18 : 24,
+                fontSize: widget.isMobile ? 16 : 24,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),
             ),
             Container(
               width: 2,
-              height: 24,
+              height: widget.isMobile ? 20 : 24,
               margin: EdgeInsets.only(left: 2),
               decoration: BoxDecoration(
                 color: AppColors.accent,
@@ -413,14 +434,19 @@ class _HeroSectionState extends State<HeroSection>
                 borderRadius: BorderRadius.circular(30),
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: widget.isMobile ? 24 : 32,
-                    vertical: widget.isMobile ? 14 : 18,
+                    horizontal: widget.isMobile ? 20 : 32,
+                    vertical: widget.isMobile ? 12 : 18,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(icon, color: Colors.white, size: 20),
-                      SizedBox(width: 10),
+                      Icon(
+                        icon,
+                        color: Colors.white,
+                        size: widget.isMobile ? 16 : 18,
+                      ),
+                      SizedBox(width: 8),
                       Text(
                         text,
                         style: TextStyle(
@@ -443,156 +469,198 @@ class _HeroSectionState extends State<HeroSection>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: widget.homeKey,
-      height: widget.isMobile
-          ? MediaQuery.of(context).size.height * 0.90
-          : MediaQuery.of(context).size.height,
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.background,
-                  AppColors.cardBackground.withOpacity(0.5),
-                  AppColors.gradientEnd.withOpacity(0.8),
-                  AppColors.background,
-                ],
-                stops: [0.0, 0.3, 0.7, 1.0],
+    return Center(
+      child: Container(
+        key: widget.homeKey,
+        height: widget.isMobile
+            ? MediaQuery.of(context).size.height * 0.95
+            : MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.background,
+                    AppColors.cardBackground.withOpacity(0.5),
+                    AppColors.gradientEnd.withOpacity(0.8),
+                    AppColors.background,
+                  ],
+                  stops: [0.0, 0.3, 0.7, 1.0],
+                ),
+              ),
+              child: _buildAnimatedBackground(),
+            ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: widget.isMobile ? 20 : 80,
+                vertical: widget.isMobile ? 20 : 60,
+              ),
+              child: ClipRect(
+                child: widget.isMobile
+                    ? _buildMobileLayout()
+                    : _buildDesktopLayout(),
               ),
             ),
-            child: _buildAnimatedBackground(),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.isMobile ? 20 : 80,
-              vertical: widget.isMobile ? 40 : 60,
-            ),
-            child: ClipRect(
-              child: widget.isMobile
-                  ? _buildMobileLayout()
-                  : _buildDesktopLayout(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildMobileLayout() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SlideTransition(
-          position: _slideAnimation,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: _buildFloatingElement(
-                _buildModernProfileImage(),
-                Duration(milliseconds: 200),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SlideTransition(
+            position: _slideAnimation,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: _buildFloatingElement(
+                  _buildModernProfileImage(),
+                  Duration(milliseconds: 200),
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 40),
-        SlideTransition(
-          position: _slideAnimation,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.accent.withOpacity(0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'WELCOME TO MY PORTFOLIO',
-                        style: TextStyle(
-                          color: AppColors.accent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
+          SizedBox(height: 32),
+          SlideTransition(
+            position: _slideAnimation,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.accent.withOpacity(0.3),
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Text('👋', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [AppColors.textPrimary, AppColors.accent],
-                  ).createShader(bounds),
-                  child: Text(
-                    'Rishal',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      height: 1.1,
-                      letterSpacing: -1,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'WELCOME TO MY PORTFOLIO',
+                            style: TextStyle(
+                              color: AppColors.accent,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          Text('👋', style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 16),
-                _buildTypingText(),
-                SizedBox(height: 30),
-                Text(
-                  'Crafting beautiful mobile experiences with Flutter.\nTurning ideas into reality, one widget at a time.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 16,
-                    height: 1.6,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                SizedBox(height: 40),
-                Wrap(
-                  spacing: 15,
-                  runSpacing: 15,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _buildModernButton('View Projects', Icons.work, () {}),
-                    _buildModernButton('Contact Me', Icons.mail, () {}),
-                  ],
-                ),
-                SizedBox(height: 40),
-                Wrap(
-                  spacing: 20,
-                  runSpacing: 15,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _buildModernSocialIcon(Icons.code, 'GitHub', () {}),
-                    _buildModernSocialIcon(Icons.work, 'LinkedIn', () {}),
-                    _buildModernSocialIcon(
-                      Icons.flutter_dash,
-                      'Flutter',
-                      () {},
+                  SizedBox(height: 24),
+                  Center(
+                    child: ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [AppColors.textPrimary, AppColors.accent],
+                      ).createShader(bounds),
+                      child: Text(
+                        'Rishal',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          height: 1.1,
+                          letterSpacing: -1,
+                        ),
+                      ),
                     ),
-                    _buildModernSocialIcon(Icons.email, 'Email', () {}),
-                    _buildModernSocialIcon(Icons.phone, 'WhatsApp', () {}),
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(height: 20),
+                  _buildTypingText(),
+                  SizedBox(height: 24),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Crafting beautiful mobile experiences with Flutter.\nTurning ideas into reality, one widget at a time.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                          height: 1.5,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  Center(
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _buildModernButton('View Projects', Icons.work, () {}),
+                        _buildModernButton('Contact Me', Icons.mail, () {}),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  Center(
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _buildModernSocialIcon(
+                          'assets/images/github.svg',
+                          'GitHub',
+                          () {},
+                        ),
+                        _buildModernSocialIcon(
+                          'assets/images/linkedin.svg',
+                          'LinkedIn',
+                          () {},
+                        ),
+                        _buildModernSocialIcon(
+                          'assets/images/instagram.svg',
+                          'Instagram',
+                          () {},
+                        ),
+                        _buildModernSocialIcon(
+                          'assets/images/email.svg',
+                          'Email',
+                          () {},
+                        ),
+                        _buildModernSocialIcon(
+                          'assets/images/whatsapp.svg',
+                          'WhatsApp',
+                          () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -698,19 +766,35 @@ class _HeroSectionState extends State<HeroSection>
                   _buildFloatingElement(
                     Row(
                       children: [
-                        _buildModernSocialIcon(Icons.code, 'GitHub', () {}),
-                        SizedBox(width: 20),
-                        _buildModernSocialIcon(Icons.work, 'LinkedIn', () {}),
-                        SizedBox(width: 20),
                         _buildModernSocialIcon(
-                          Icons.flutter_dash,
-                          'Flutter',
+                          'assets/images/github.svg',
+                          'GitHub',
                           () {},
                         ),
                         SizedBox(width: 20),
-                        _buildModernSocialIcon(Icons.email, 'Email', () {}),
+                        _buildModernSocialIcon(
+                          'assets/images/linkedin.svg',
+                          'LinkedIn',
+                          () {},
+                        ),
                         SizedBox(width: 20),
-                        _buildModernSocialIcon(Icons.phone, 'WhatsApp', () {}),
+                        _buildModernSocialIcon(
+                          'assets/images/instagram.svg',
+                          'Instagram',
+                          () {},
+                        ),
+                        SizedBox(width: 20),
+                        _buildModernSocialIcon(
+                          'assets/images/email.svg',
+                          'Email',
+                          () {},
+                        ),
+                        SizedBox(width: 20),
+                        _buildModernSocialIcon(
+                          'assets/images/whatsapp.svg',
+                          'WhatsApp',
+                          () {},
+                        ),
                       ],
                     ),
                     Duration(milliseconds: 1000),
@@ -744,38 +828,263 @@ class _HeroSectionState extends State<HeroSection>
   }
 }
 
-class GeometricBackgroundPainter extends CustomPainter {
+// Modern Particle System with Dynamic Grid Distortion
+class ModernParticleBackgroundPainter extends CustomPainter {
   final double rotation;
+  final Offset mousePosition;
+  final Size canvasSize;
   final Color color;
+  final bool isMobile;
 
-  GeometricBackgroundPainter({required this.rotation, required this.color});
+  ModernParticleBackgroundPainter({
+    required this.rotation,
+    required this.mousePosition,
+    required this.canvasSize,
+    required this.color,
+    this.isMobile = false,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
+    final paint = Paint()..style = PaintingStyle.fill;
+    final linePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.0;
+    final glowPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15);
 
-    canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(rotation);
+    // Particle system with orbiting clusters
+    final particleCount = isMobile ? 30 : 60;
+    final particles = <Offset>[];
+    final particleSizes = <double>[];
+    final particleOpacities = <double>[];
+    final particleSpeeds = <double>[];
 
-    for (int i = 0; i < 6; i++) {
-      canvas.rotate(math.pi / 3);
-      canvas.drawCircle(Offset(size.width * 0.2, 0), size.width * 0.1, paint);
+    // Generate particles with dynamic orbits
+    for (int i = 0; i < particleCount; i++) {
+      final baseAngle = (i / particleCount) * 2 * math.pi;
+      final orbitRadius = size.width * (0.1 + (i % 4) * 0.1);
 
-      final path = Path();
-      path.moveTo(size.width * 0.15, -size.width * 0.05);
-      path.lineTo(size.width * 0.25, -size.width * 0.05);
-      path.lineTo(size.width * 0.3, size.width * 0.05);
-      path.lineTo(size.width * 0.2, size.width * 0.1);
-      path.close();
-      canvas.drawPath(path, paint);
+      // Mouse influence
+      double mouseInfluence = 0;
+      if (!isMobile && mousePosition != Offset.zero) {
+        final mouseDistance =
+            (mousePosition - Offset(size.width / 2, size.height / 2)).distance;
+        mouseInfluence =
+            math.max(0, 1 - (mouseDistance / (size.width * 0.4))) * 0.4;
+      }
+
+      // Dynamic orbit animation
+      final orbitSpeed = 0.3 + (i % 3) * 0.1;
+      final animatedAngle = baseAngle + rotation * orbitSpeed;
+      final animatedRadius =
+          orbitRadius +
+          math.sin(rotation * 1.5 + i) * 20 +
+          (mouseInfluence * 40);
+
+      double x = size.width / 2 + math.cos(animatedAngle) * animatedRadius;
+      double y = size.height / 2 + math.sin(animatedAngle) * animatedRadius;
+
+      // Enhanced mouse attraction
+      if (!isMobile && mousePosition != Offset.zero) {
+        final attractionStrength = mouseInfluence * 0.5;
+        x += (mousePosition.dx - x) * attractionStrength;
+        y += (mousePosition.dy - y) * attractionStrength;
+      }
+
+      particles.add(Offset(x, y));
+      particleSizes.add(
+        3.0 + math.sin(rotation * 2 + i) * 2 + mouseInfluence * 3,
+      );
+      particleOpacities.add(
+        0.4 + math.cos(rotation + i) * 0.3 + mouseInfluence * 0.3,
+      );
+      particleSpeeds.add(orbitSpeed);
+    }
+
+    // Draw dynamic connections
+    if (!isMobile) {
+      for (int i = 0; i < particles.length; i++) {
+        for (int j = i + 1; j < particles.length; j++) {
+          final distance = (particles[i] - particles[j]).distance;
+          final maxConnectionDistance = 150.0;
+
+          if (distance < maxConnectionDistance) {
+            final lineOpacity = (1 - distance / maxConnectionDistance) * 0.2;
+            final mouseProximity = mousePosition != Offset.zero
+                ? math.max(
+                    0,
+                    1 -
+                        ((mousePosition -
+                                    Offset(
+                                      (particles[i].dx + particles[j].dx) / 2,
+                                      (particles[i].dy + particles[j].dy) / 2,
+                                    ))
+                                .distance /
+                            250),
+                  )
+                : 0.0;
+
+            linePaint.color = color.withOpacity(
+              lineOpacity + mouseProximity * 0.3,
+            );
+            canvas.drawLine(particles[i], particles[j], linePaint);
+          }
+        }
+      }
+    }
+
+    // Draw particles with enhanced glow
+    for (int i = 0; i < particles.length; i++) {
+      final particle = particles[i];
+      final size = particleSizes[i];
+      final opacity = particleOpacities[i];
+
+      // Enhanced glow effect
+      if (!isMobile) {
+        glowPaint.color = color.withOpacity(opacity * 0.4);
+        canvas.drawCircle(particle, size * 3, glowPaint);
+      }
+
+      paint.color = color.withOpacity(opacity);
+      canvas.drawCircle(particle, size, paint);
+    }
+
+    // Floating geometric shapes with dynamic scaling
+    final shapeCount = isMobile ? 10 : 20;
+    for (int i = 0; i < shapeCount; i++) {
+      final angle = rotation * (0.4 + i * 0.1) + (i * math.pi / 5);
+      final baseDistance = size.width * (0.1 + (i % 3) * 0.15);
+
+      double mouseEffect = 0;
+      if (!isMobile && mousePosition != Offset.zero) {
+        final mouseDistance =
+            (mousePosition - Offset(size.width / 2, size.height / 2)).distance;
+        mouseEffect =
+            math.max(0, 1 - (mouseDistance / (size.width * 0.5))) * 0.5;
+      }
+
+      final distance =
+          baseDistance + math.sin(rotation * 1.2 + i) * 30 + (mouseEffect * 50);
+
+      double x = size.width / 2 + math.cos(angle) * distance;
+      double y = size.height / 2 + math.sin(angle) * distance;
+
+      if (!isMobile && mousePosition != Offset.zero) {
+        final attraction = mouseEffect * 0.4;
+        x += (mousePosition.dx - x) * attraction;
+        y += (mousePosition.dy - y) * attraction;
+      }
+
+      final shapeSize =
+          (isMobile ? 6 : 10) +
+          math.sin(rotation * 1.5 + i) * 3 +
+          (mouseEffect * 6);
+      final opacity =
+          0.3 +
+          (math.sin(rotation + i * 0.8) + 1) / 2 * 0.2 +
+          (mouseEffect * 0.4);
+
+      paint.color = color.withOpacity(opacity);
+
+      // Draw varied shapes
+      if (i % 4 == 0) {
+        canvas.drawCircle(Offset(x, y), shapeSize / 2, paint);
+      } else if (i % 4 == 1) {
+        canvas.drawRect(
+          Rect.fromCenter(
+            center: Offset(x, y),
+            width: shapeSize,
+            height: shapeSize,
+          ),
+          paint,
+        );
+      } else if (i % 4 == 2) {
+        final path = Path();
+        path.moveTo(x, y - shapeSize / 2);
+        path.lineTo(x - shapeSize / 2, y + shapeSize / 2);
+        path.lineTo(x + shapeSize / 2, y + shapeSize / 2);
+        path.close();
+        canvas.drawPath(path, paint);
+      } else {
+        final path = Path();
+        path.moveTo(x, y - shapeSize / 2);
+        path.lineTo(x - shapeSize / 2, y);
+        path.lineTo(x, y + shapeSize / 2);
+        path.lineTo(x + shapeSize / 2, y);
+        path.close();
+        canvas.drawPath(path, paint);
+      }
+    }
+
+    // Dynamic grid distortion effect (desktop only)
+    if (!isMobile) {
+      final gridPaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8;
+
+      final gridSpacing = 60.0;
+      final distortionRadius = 200.0;
+
+      // Vertical lines with distortion
+      for (double x = 0; x < size.width; x += gridSpacing) {
+        double opacity = 0.05;
+        double distortionX = 0;
+
+        if (mousePosition != Offset.zero) {
+          final distance = (mousePosition.dx - x).abs();
+          if (distance < distortionRadius) {
+            opacity += (1 - distance / distortionRadius) * 0.15;
+            distortionX =
+                (1 - distance / distortionRadius) *
+                (mousePosition.dx - x) *
+                0.1;
+          }
+        }
+
+        gridPaint.color = color.withOpacity(opacity);
+        final path = Path();
+        for (double y = 0; y < size.height; y += gridSpacing / 2) {
+          double localDistortionX = distortionX * (1 - (y / size.height));
+          path.moveTo(x + localDistortionX, y);
+          path.lineTo(x + localDistortionX, y + gridSpacing / 2);
+        }
+        canvas.drawPath(path, gridPaint);
+      }
+
+      // Horizontal lines with distortion
+      for (double y = 0; y < size.height; y += gridSpacing) {
+        double opacity = 0.05;
+        double distortionY = 0;
+
+        if (mousePosition != Offset.zero) {
+          final distance = (mousePosition.dy - y).abs();
+          if (distance < distortionRadius) {
+            opacity += (1 - distance / distortionRadius) * 0.15;
+            distortionY =
+                (1 - distance / distortionRadius) *
+                (mousePosition.dy - y) *
+                0.1;
+          }
+        }
+
+        gridPaint.color = color.withOpacity(opacity);
+        final path = Path();
+        for (double x = 0; x < size.width; x += gridSpacing / 2) {
+          double localDistortionY = distortionY * (1 - (x / size.width));
+          path.moveTo(x, y + localDistortionY);
+          path.lineTo(x + gridSpacing / 2, y + localDistortionY);
+        }
+        canvas.drawPath(path, gridPaint);
+      }
     }
   }
 
   @override
-  bool shouldRepaint(GeometricBackgroundPainter oldDelegate) {
-    return oldDelegate.rotation != rotation;
+  bool shouldRepaint(ModernParticleBackgroundPainter oldDelegate) {
+    return oldDelegate.rotation != rotation ||
+        oldDelegate.mousePosition != mousePosition ||
+        oldDelegate.isMobile != isMobile;
   }
 }

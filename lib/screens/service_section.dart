@@ -262,9 +262,7 @@ class _ModernServicesSectionState extends State<ModernServicesSection>
         // Use a fixed height to avoid infinite constraints
         return SizedBox(
           width: constraints.maxWidth,
-          height: widget.isMobile
-              ? 800
-              : 1200, // Adjust based on content height
+          height: widget.isMobile ? 800 : 800, // Adjust based on content height
           child: CustomPaint(
             painter: ServiceBackgroundPainter(
               animation: _floatingAnimation,
@@ -373,10 +371,10 @@ class _ModernServicesSectionState extends State<ModernServicesSection>
                           childAspectRatio = 1.2;
                         } else if (constraints.maxWidth < 1200) {
                           crossAxisCount = 2;
-                          childAspectRatio = 1.0;
+                          childAspectRatio = 1.5;
                         } else {
                           crossAxisCount = 3;
-                          childAspectRatio = 0.9;
+                          childAspectRatio = 1.5;
                         }
 
                         return GridView.count(
@@ -386,6 +384,7 @@ class _ModernServicesSectionState extends State<ModernServicesSection>
                           crossAxisSpacing: 30,
                           mainAxisSpacing: 30,
                           childAspectRatio: childAspectRatio,
+
                           children: [
                             _buildModernServiceCard(
                               icon: Icons.phone_android,
@@ -406,17 +405,7 @@ class _ModernServicesSectionState extends State<ModernServicesSection>
                               ],
                               index: 1,
                             ),
-                            _buildModernServiceCard(
-                              icon: Icons.speed,
-                              title: 'Rapid Prototyping',
-                              description:
-                                  'Quick MVP development to validate ideas and bring concepts to life fast.',
-                              gradientColors: [
-                                Colors.orange,
-                                Colors.orangeAccent,
-                              ],
-                              index: 2,
-                            ),
+
                             _buildModernServiceCard(
                               icon: Icons.api,
                               title: 'API Integration',
@@ -428,22 +417,33 @@ class _ModernServicesSectionState extends State<ModernServicesSection>
                               ],
                               index: 3,
                             ),
-                            _buildModernServiceCard(
-                              icon: Icons.code,
-                              title: 'Open Source',
-                              description:
-                                  'Contributing to the developer community with reusable packages and solutions.',
-                              gradientColors: [Colors.red, Colors.redAccent],
-                              index: 4,
-                            ),
-                            _buildModernServiceCard(
-                              icon: Icons.tune,
-                              title: 'Performance Optimization',
-                              description:
-                                  'App performance tuning, memory management, and scalability improvements.',
-                              gradientColors: [Colors.teal, Colors.tealAccent],
-                              index: 5,
-                            ),
+                            //  _buildModernServiceCard(
+                            //   icon: Icons.speed,
+                            //   title: 'Rapid Prototyping',
+                            //   description:
+                            //       'Quick MVP development to validate ideas and bring concepts to life fast.',
+                            //   gradientColors: [
+                            //     Colors.orange,
+                            //     Colors.orangeAccent,
+                            //   ],
+                            //   index: 2,
+                            // ),
+                            // _buildModernServiceCard(
+                            //   icon: Icons.code,
+                            //   title: 'Open Source',
+                            //   description:
+                            //       'Contributing to the developer community with reusable packages and solutions.',
+                            //   gradientColors: [Colors.red, Colors.redAccent],
+                            //   index: 4,
+                            // ),
+                            // _buildModernServiceCard(
+                            //   icon: Icons.tune,
+                            //   title: 'Performance Optimization',
+                            //   description:
+                            //       'App performance tuning, memory management, and scalability improvements.',
+                            //   gradientColors: [Colors.teal, Colors.tealAccent],
+                            //   index: 5,
+                            // ),
                           ],
                         );
                       },

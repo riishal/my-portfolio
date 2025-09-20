@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rishal/screens/portfolio_home_page.dart';
+import 'package:rishal/screens/home_page.dart';
 import 'package:rishal/utils/app_colors.dart';
 
 void main() {
