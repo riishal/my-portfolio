@@ -1,38 +1,228 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Portfolio of Rishal - Flutter Developer & Mobile App Specialist creating exceptional digital experiences.">
+  <meta name="keywords" content="Rishal, Portfolio, Flutter Developer, Mobile Apps, Cross-Platform Development, UI/UX Design, Firebase, Dart">
+  <meta name="author" content="Rishal">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph Meta -->
+  <meta property="og:title" content="Rishal | Flutter Developer Portfolio">
+  <meta property="og:description" content="Passionate Flutter Developer crafting beautiful, high-performance mobile applications.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rishal-portfolio.web.app">
+  <meta property="og:image" content="android-chrome-512x512.png">
+
+  <!-- Twitter Card Meta -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rishal | Flutter Developer Portfolio">
+  <meta name="twitter:description" content="Passionate Flutter Developer crafting beautiful, high-performance mobile applications.">
+  <meta name="twitter:image" content="android-chrome-512x512.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="rishal">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Rishal Portfolio">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
   <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>rishal</title>
+  <title>Rishal | Flutter Developer Portfolio</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Loader Styles -->
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --white: #ffffff;
+      --shadow-light: rgba(0,0,0,0.1);
+      --shadow-medium: rgba(0,0,0,0.15);
+      --accent-color: #667eea;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Plus Jakarta Sans', sans-serif;
+      background:var(--background);
+      display:block;
+      overflow-x:hidden; /* allow vertical scrolling */
+    }
+
+    /* Geometric background */
+    .geometric-bg { position:absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:0; }
+    .geometric-shape { position:absolute; opacity:0.03; animation: geometricFloat 20s ease-in-out infinite; }
+    .shape-1 { width:200px; height:200px; background:var(--primary-gradient); border-radius:30% 70% 70% 30% / 30% 30% 70% 70%; top:10%; left:5%; animation-delay:0s; }
+    .shape-2 { width:150px; height:150px; background:var(--secondary-gradient); border-radius:50%; top:60%; right:10%; animation-delay:5s; }
+    .shape-3 { width:120px; height:120px; background:var(--accent-gradient); border-radius:0 50% 50% 50%; bottom:20%; left:20%; animation-delay:10s; }
+    .shape-4 { width:180px; height:180px; background:var(--primary-gradient); border-radius:50% 0 50% 50%; top:30%; right:30%; animation-delay:15s; }
+    @keyframes geometricFloat { 0%,100%{transform:translateY(0) rotate(0) scale(1);}25%{transform:translateY(-30px) rotate(90deg) scale(1.1);}50%{transform:translateY(-60px) rotate(180deg) scale(0.9);}75%{transform:translateY(-30px) rotate(270deg) scale(1.05);} }
+
+    /* Loader Container */
+    .loader-container {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:var(--background);
+      overflow:hidden;
+      transition: opacity 0.8s ease-in-out;
+    }
+    .loader-container.fade-exit { opacity:0; pointer-events:none; }
+
+    /* Card & brand */
+    .content-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); border-radius:30px; padding:50px 40px; box-shadow:0 25px 80px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.05); position:relative; overflow:hidden; animation:cardEntrance 1.2s ease-out; }
+    .content-card::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); animation:cardShine 3s infinite; }
+    @keyframes cardEntrance {0%{opacity:0; transform:translateY(50px) scale(0.95);}100%{opacity:1; transform:translateY(0) scale(1);}}
+    @keyframes cardShine {0%{left:-100%;}100%{left:100%;}}
+
+    .brand-container { text-align:center; margin-bottom:60px; }
+    .brand-logo { width:100px; height:100px; background:var(--white); border-radius:25px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 20px 60px var(--shadow-light),0 8px 25px var(--shadow-medium); animation:brandFloat 4s ease-in-out infinite; }
+    .brand-logo::before { content:''; position:absolute; inset:-3px; background:var(--primary-gradient); border-radius:28px; z-index:-1; opacity:0.8; }
+    .brand-letter { font-family:'Space Mono', monospace; font-size:40px; font-weight:700; background:var(--primary-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .brand-name { font-size:28px; font-weight:700; color:var(--text-primary); margin-bottom:8px; opacity:0; animation:fadeInUp 1s ease-out 0.5s forwards; }
+    .brand-tagline { font-size:14px; font-weight:500; color:var(--text-secondary); text-transform:uppercase; letter-spacing:2px; opacity:0; animation:fadeInUp 1s ease-out 0.8s forwards; }
+
+    @keyframes brandFloat {0%,100%{transform:translateY(0);box-shadow:0 20px 60px var(--shadow-light),0 8px 25px var(--shadow-medium);}50%{transform:translateY(-15px);box-shadow:0 35px 80px var(--shadow-light),0 15px 35px var(--shadow-medium);}}
+    @keyframes fadeInUp {0%{opacity:0; transform:translateY(30px);}100%{opacity:1; transform:translateY(0);}}
+
+    /* Loading animation */
+    .loading-animation { display:flex; flex-direction:column; align-items:center; margin-bottom:40px; }
+    .dots-container { display:flex; gap:8px; margin-bottom:30px; }
+    .dot { width:12px; height:12px; background:var(--primary-gradient); border-radius:50%; animation:dotPulse 1.4s ease-in-out infinite; opacity:0.4; }
+    .dot:nth-child(1){animation-delay:0s;} .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;} .dot:nth-child(4){animation-delay:0.6s;} .dot:nth-child(5){animation-delay:0.8s;}
+    @keyframes dotPulse {0%,60%,100%{transform:scale(1); opacity:0.4;}30%{transform:scale(1.4); opacity:1;}}
+
+    .progress-wrapper { width:300px; height:2px; background:rgba(102,126,234,0.1); border-radius:1px; overflow:hidden; margin-bottom:30px; position:relative; }
+    .progress-fill { height:100%; background:var(--primary-gradient); border-radius:1px; animation:progressFill 2.5s ease-out infinite; position:relative; }
+    .progress-fill::after { content:''; position:absolute; top:0; right:0; width:30px; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation:progressShimmer 2.5s ease-out infinite; }
+    @keyframes progressFill {0%{width:0%;}40%{width:65%;}100%{width:100%;}}
+    @keyframes progressShimmer {0%{transform:translateX(-30px);}100%{transform:translateX(330px);}}
+
+    .loading-text { font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:8px; animation:textGlow 2s ease-in-out infinite; }
+    .loading-subtitle { font-size:13px; font-weight:400; color:var(--text-secondary); text-align:center; line-height:1.6; max-width:280px; }
+    @keyframes textGlow {0%,100%{opacity:0.8; transform:scale(1);}50%{opacity:1; transform:scale(1.01);}}
+
+    .loading-percentage { font-family:'Space Mono', monospace; font-size:12px; font-weight:600; color:var(--accent-color); margin-top:10px; opacity:0.7; }
+
+    @media (max-width:480px) {
+      .content-card{padding:40px 25px;margin:20px;border-radius:25px;}
+      .brand-logo{width:80px;height:80px;}
+      .brand-letter{font-size:32px;}
+      .brand-name{font-size:24px;}
+      .progress-wrapper{width:240px;}
+      .loading-subtitle{max-width:220px;}
+    }
+  </style>
 </head>
 <body>
+  <!-- Geometric Background -->
+  <div class="geometric-bg">
+    <div class="geometric-shape shape-1"></div>
+    <div class="geometric-shape shape-2"></div>
+    <div class="geometric-shape shape-3"></div>
+    <div class="geometric-shape shape-4"></div>
+  </div>
+
+  <!-- Loader Container -->
+  <div class="loader-container">
+    <div class="content-card">
+      <div class="brand-container">
+        <div class="brand-logo"><div class="brand-letter">R</div></div>
+        <div class="brand-name">Rishal</div>
+        <div class="brand-tagline">Flutter Developer</div>
+      </div>
+
+      <div class="loading-animation">
+        <div class="dots-container">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="progress-wrapper"><div class="progress-fill"></div></div>
+        <div class="loading-text" id="loadingText">Initializing Portfolio</div>
+        <div class="loading-percentage" id="loadingPercentage">0%</div>
+        <div class="loading-subtitle">Preparing an exceptional mobile development experience</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flutter App Bootstrap -->
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    const loadingStates = [
+      {text:'Initializing Portfolio',duration:800},
+      {text:'Loading Flutter Framework',duration:900},
+      {text:'Preparing Components',duration:700},
+      {text:'Optimizing Performance',duration:600},
+      {text:'Ready to Launch',duration:400}
+    ];
+    let currentState=0; let progress=0;
+    const loadingText=document.getElementById('loadingText');
+    const loadingPercentage=document.getElementById('loadingPercentage');
+
+    function updateLoadingState(){
+      if(currentState<loadingStates.length){
+        const state=loadingStates[currentState];
+        loadingText.style.opacity='0';
+        setTimeout(()=>{loadingText.textContent=state.text; loadingText.style.opacity='1';},200);
+        currentState++;
+        setTimeout(updateLoadingState,state.duration);
+      }
+    }
+
+    function updateProgress(){
+      progress+=Math.random()*3+1;
+      if(progress>100) progress=100;
+      loadingPercentage.textContent=Math.round(progress)+'%';
+      if(progress<100) setTimeout(updateProgress,100);
+    }
+
+    setTimeout(updateLoadingState,500);
+    setTimeout(updateProgress,300);
+
+    // Hide loader after load
+    window.addEventListener('load', function() {
+      setTimeout(()=>{
+        const loaderContainer=document.querySelector('.loader-container');
+        if(loaderContainer){
+          loaderContainer.classList.add('fade-exit');
+          setTimeout(()=>{ loaderContainer.style.display='none'; }, 800);
+        }
+      },3500);
+    });
+
+    document.addEventListener('DOMContentLoaded',function(){
+      const elements=document.querySelectorAll('.brand-name,.brand-tagline');
+      elements.forEach((el,index)=>{el.style.animationDelay=`${0.5+index*0.3}s`;});
+    });
+  </script>
 </body>
 </html>

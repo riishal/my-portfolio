@@ -108,7 +108,9 @@ class _ModernContactSectionState extends State<ModernContactSection>
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
-                    padding: EdgeInsets.all(widget.isMobile ? 24 : 32),
+                    padding: EdgeInsets.all(
+                      widget.isMobile ? 16 : 20,
+                    ), // Reduced padding
                     transform: Matrix4.identity()
                       ..scale(_isHovered ? 1.03 : 1.0)
                       ..rotateZ(_isHovered ? 0.005 : 0.0),
@@ -128,7 +130,9 @@ class _ModernContactSectionState extends State<ModernContactSection>
                                 AppColors.background.withOpacity(0.8),
                               ],
                             ),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ), // Reduced border radius
                       border: Border.all(
                         color: _isHovered
                             ? gradientColors[0].withOpacity(0.6)
@@ -159,11 +163,12 @@ class _ModernContactSectionState extends State<ModernContactSection>
                             ],
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min, // Important: Use min size
                       children: [
                         AnimatedContainer(
                           duration: Duration(milliseconds: 400),
-                          width: widget.isMobile ? 60 : 70,
-                          height: widget.isMobile ? 60 : 70,
+                          width: widget.isMobile ? 50 : 60, // Reduced size
+                          height: widget.isMobile ? 50 : 60, // Reduced size
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: _isHovered
@@ -200,42 +205,64 @@ class _ModernContactSectionState extends State<ModernContactSection>
                                 child: Icon(
                                   icon,
                                   color: Colors.white,
-                                  size: widget.isMobile ? 28 : 32,
+                                  size: widget.isMobile
+                                      ? 24
+                                      : 28, // Reduced size
                                 ),
                               );
                             },
                           ),
                         ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          style: TextStyle(
-                            color: _isHovered
-                                ? gradientColors[0]
-                                : AppColors.textPrimary,
-                            fontSize: widget.isMobile ? 18 : 20,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.3,
+                        SizedBox(height: 12), // Reduced spacing
+                        Flexible(
+                          // Wrap with Flexible
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              color: _isHovered
+                                  ? gradientColors[0]
+                                  : AppColors.textPrimary,
+                              fontSize: widget.isMobile
+                                  ? 16
+                                  : 18, // Reduced font size
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.3,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          value,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: widget.isMobile ? 14 : 16,
-                            fontWeight: FontWeight.w500,
+                        SizedBox(height: 6), // Reduced spacing
+                        Flexible(
+                          // Wrap with Flexible
+                          child: Text(
+                            value,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: widget.isMobile
+                                  ? 12
+                                  : 14, // Reduced font size
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          subtitle,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: AppColors.textSecondary.withOpacity(0.7),
-                            fontSize: widget.isMobile ? 12 : 13,
-                            letterSpacing: 0.3,
+                        SizedBox(height: 2), // Reduced spacing
+                        Flexible(
+                          // Wrap with Flexible
+                          child: Text(
+                            subtitle,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textSecondary.withOpacity(0.7),
+                              fontSize: widget.isMobile
+                                  ? 10
+                                  : 11, // Reduced font size
+                              letterSpacing: 0.3,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ),
                       ],
@@ -492,9 +519,11 @@ class _ModernContactSectionState extends State<ModernContactSection>
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: widget.isMobile ? 1 : 3,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: widget.isMobile ? 1.5 : 1.2,
+                    crossAxisSpacing: 20, // Reduced spacing
+                    mainAxisSpacing: 20, // Reduced spacing
+                    childAspectRatio: widget.isMobile
+                        ? 2.0
+                        : 1.4, // Adjusted aspect ratio
                     children: [
                       _buildContactCard(
                         icon: Icons.location_on,
