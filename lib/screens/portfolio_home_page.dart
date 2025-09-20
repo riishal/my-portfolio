@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:rishal/screens/footer_section.dart';
 import 'package:rishal/screens/hero_page.dart';
 import 'package:rishal/screens/service_section.dart';
 import 'package:rishal/utils/app_colors.dart';
-import 'dart:math' as math;
-
 import 'about_section.dart';
 import 'portfolio_section.dart';
 import 'contact_section.dart';
-import 'footer_section.dart';
 
 class PortfolioHomePage extends StatefulWidget {
   final VoidCallback onThemeToggle;
 
-  PortfolioHomePage({required this.onThemeToggle});
+  const PortfolioHomePage({required this.onThemeToggle, super.key});
 
   @override
   _PortfolioHomePageState createState() => _PortfolioHomePageState();
 }
 
-class _PortfolioHomePageState extends State<PortfolioHomePage>
-    with TickerProviderStateMixin {
+class _PortfolioHomePageState extends State<PortfolioHomePage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _aboutKey = GlobalKey();
@@ -27,45 +24,13 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
   final GlobalKey _portfolioKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
 
-  late AnimationController _appBarController;
-  late Animation<double> _appBarAnimation;
-
   bool _showMobileMenu = false;
-  bool _isScrolled = false;
   String _selectedNavItem = 'HOME';
 
   @override
-  void initState() {
-    super.initState();
-
-    _appBarController = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _appBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _appBarController, curve: Curves.easeInOut),
-    );
-
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
   void dispose() {
-    _appBarController.dispose();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.offset > 100 && !_isScrolled) {
-      setState(() => _isScrolled = true);
-      _appBarController.forward();
-    } else if (_scrollController.offset <= 100 && _isScrolled) {
-      setState(() => _isScrolled = false);
-      _appBarController.reverse();
-    }
   }
 
   void _scrollToSection(GlobalKey key, String navItem) {
@@ -73,7 +38,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        duration: Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 800),
         curve: Curves.easeInOut,
       );
     }
@@ -90,85 +55,58 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      extendBodyBehindAppBar: true,
-      appBar: _buildModernAppBar(isMobile),
       drawer: isMobile ? _buildModernDrawer() : null,
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            HeroSection(homeKey: _homeKey, isMobile: isMobile),
-            AboutSection(aboutKey: _aboutKey, isMobile: isMobile),
-            ModernServicesSection(
-              servicesKey: _servicesKey,
-              isMobile: isMobile,
-            ),
-            ModernPortfolioSection(
-              portfolioKey: _portfolioKey,
-              isMobile: isMobile,
-            ),
-            ModernContactSection(contactKey: _contactKey, isMobile: isMobile),
-            ModernFooterSection(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildModernAppBar(bool isMobile) {
-    return AppBar(
-      backgroundColor: _isScrolled
-          ? AppColors.cardBackground.withOpacity(0.95)
-          : Colors.transparent,
-      elevation: _isScrolled ? 8 : 0,
-      flexibleSpace: _isScrolled
-          ? Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.cardBackground.withOpacity(0.95),
-                    AppColors.background.withOpacity(0.95),
-                  ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                HeroSection(homeKey: _homeKey, isMobile: isMobile),
+                AboutSection(aboutKey: _aboutKey, isMobile: isMobile),
+                ModernServicesSection(
+                  servicesKey: _servicesKey,
+                  isMobile: isMobile,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-            )
-          : null,
-      title: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        child: ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: [AppColors.accent, AppColors.accent.withOpacity(0.7)],
-          ).createShader(bounds),
-          child: Text(
-            '<Rishal/>',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: _isScrolled ? 20 : 24,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.italic,
-              letterSpacing: 0.5,
+                ModernPortfolioSection(
+                  portfolioKey: _portfolioKey,
+                  isMobile: isMobile,
+                ),
+                ModernContactSection(
+                  contactKey: _contactKey,
+                  isMobile: isMobile,
+                ),
+                ModernFooterSection(),
+              ],
             ),
           ),
-        ),
+          if (isMobile)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Builder(
+                builder: (context) => IconButton(
+                  icon: Icon(Icons.menu, color: AppColors.accent, size: 28),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
+              ),
+            ),
+          if (!isMobile)
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Row(
+                children: [
+                  ..._buildNavItems(),
+                  const SizedBox(width: 16),
+                  _buildModernResumeButton(),
+                  const SizedBox(width: 16),
+                  _buildModernThemeButton(),
+                ],
+              ),
+            ),
+        ],
       ),
-      actions: isMobile
-          ? [_buildModernThemeButton(), SizedBox(width: 8)]
-          : [
-              ..._buildNavItems(),
-              SizedBox(width: 16),
-              _buildModernResumeButton(),
-              SizedBox(width: 16),
-              _buildModernThemeButton(),
-              SizedBox(width: 16),
-            ],
-      iconTheme: IconThemeData(color: AppColors.accent),
     );
   }
 
@@ -201,12 +139,14 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: GestureDetector(
               onTap: onTap,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected || isHovered
                       ? AppColors.accent.withOpacity(0.1)
@@ -242,28 +182,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
         return MouseRegion(
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            transform: Matrix4.identity()..scale(isHovered ? 1.05 : 1.0),
+          child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: isHovered
-                    ? [AppColors.accent, AppColors.accent.withOpacity(0.8)]
-                    : [
-                        AppColors.accent.withOpacity(0.8),
-                        AppColors.accent.withOpacity(0.6),
-                      ],
-              ),
+              color: AppColors.accent.withOpacity(0.8),
               borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: isHovered
-                      ? AppColors.accent.withOpacity(0.4)
-                      : AppColors.accent.withOpacity(0.2),
-                  blurRadius: isHovered ? 15 : 8,
-                  offset: Offset(0, isHovered ? 6 : 3),
-                ),
-              ],
             ),
             child: Material(
               color: Colors.transparent,
@@ -271,12 +193,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
                 onTap: () {},
                 borderRadius: BorderRadius.circular(25),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.download, color: Colors.white, size: 16),
-                      SizedBox(width: 6),
+                      const Icon(Icons.download, color: Colors.white, size: 16),
+                      const SizedBox(width: 6),
                       Text(
                         'RESUME',
                         style: TextStyle(
@@ -298,177 +223,79 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
   }
 
   Widget _buildModernThemeButton() {
-    bool isHovered = false;
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return MouseRegion(
-          onEnter: (_) => setState(() => isHovered = true),
-          onExit: (_) => setState(() => isHovered = false),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              color: isHovered
-                  ? AppColors.accent.withOpacity(0.1)
-                  : AppColors.cardBackground.withOpacity(0.8),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isHovered
-                    ? AppColors.accent.withOpacity(0.5)
-                    : AppColors.accent.withOpacity(0.2),
-              ),
-              boxShadow: isHovered
-                  ? [
-                      BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: Offset(0, 5),
-                      ),
-                    ]
-                  : [],
-            ),
-            transform: Matrix4.identity()
-              ..scale(isHovered ? 1.1 : 1.0)
-              ..rotateZ(isHovered ? 0.1 : 0.0),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: widget.onThemeToggle,
-                borderRadius: BorderRadius.circular(22.5),
-                child: Icon(
-                  AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                  color: AppColors.accent,
-                  size: 22,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+    return IconButton(
+      icon: Icon(
+        AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+        color: AppColors.accent,
+        size: 22,
+      ),
+      onPressed: widget.onThemeToggle,
     );
   }
 
   Widget _buildModernDrawer() {
     return Drawer(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20),
           bottomRight: Radius.circular(20),
         ),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.background,
-              AppColors.cardBackground.withOpacity(0.5),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          Container(
+            height: 100,
+            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+            child: Icon(Icons.person, color: AppColors.accent, size: 40),
           ),
-        ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Container(
-              height: 120,
-              padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.accent.withOpacity(0.1),
-                    Colors.transparent,
-                  ],
+          _buildModernDrawerItem('HOME', Icons.home, () {
+            _scrollToSection(_homeKey, 'HOME');
+            Navigator.pop(context);
+          }),
+          _buildModernDrawerItem('ABOUT', Icons.person, () {
+            _scrollToSection(_aboutKey, 'ABOUT');
+            Navigator.pop(context);
+          }),
+          _buildModernDrawerItem('SERVICES', Icons.work, () {
+            _scrollToSection(_servicesKey, 'SERVICES');
+            Navigator.pop(context);
+          }),
+          _buildModernDrawerItem('PROJECTS', Icons.code, () {
+            _scrollToSection(_portfolioKey, 'PROJECTS');
+            Navigator.pop(context);
+          }),
+          _buildModernDrawerItem('CONTACT', Icons.mail, () {
+            _scrollToSection(_contactKey, 'CONTACT');
+            Navigator.pop(context);
+          }),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: _buildModernResumeButton(),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: ListTile(
+              leading: Icon(
+                AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: AppColors.accent,
+              ),
+              title: Text(
+                AppColors.isDarkMode ? 'Light Mode' : 'Dark Mode',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.accent,
-                          AppColors.accent.withOpacity(0.7),
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.person, color: Colors.white, size: 20),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [
-                          AppColors.accent,
-                          AppColors.accent.withOpacity(0.7),
-                        ],
-                      ).createShader(bounds),
-                      child: Text(
-                        '<Rishal/>',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              onTap: widget.onThemeToggle,
             ),
-            _buildModernDrawerItem('HOME', Icons.home, () {
-              _scrollToSection(_homeKey, 'HOME');
-              Navigator.pop(context);
-            }),
-            _buildModernDrawerItem('ABOUT', Icons.person, () {
-              _scrollToSection(_aboutKey, 'ABOUT');
-              Navigator.pop(context);
-            }),
-            _buildModernDrawerItem('SERVICES', Icons.work, () {
-              _scrollToSection(_servicesKey, 'SERVICES');
-              Navigator.pop(context);
-            }),
-            _buildModernDrawerItem('PROJECTS', Icons.code, () {
-              _scrollToSection(_portfolioKey, 'PROJECTS');
-              Navigator.pop(context);
-            }),
-            _buildModernDrawerItem('CONTACT', Icons.mail, () {
-              _scrollToSection(_contactKey, 'CONTACT');
-              Navigator.pop(context);
-            }),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: _buildModernResumeButton(),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                leading: Icon(
-                  AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                  color: AppColors.accent,
-                ),
-                title: Text(
-                  AppColors.isDarkMode ? 'Light Mode' : 'Dark Mode',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                onTap: widget.onThemeToggle,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -480,7 +307,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage>
   ) {
     bool isSelected = _selectedNavItem == title;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: isSelected ? AppColors.accent.withOpacity(0.1) : null,
         borderRadius: BorderRadius.circular(12),
