@@ -80,33 +80,138 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
               ],
             ),
           ),
+          // Mobile Navigation
           if (isMobile)
             Positioned(
-              top: 16,
-              left: 16,
-              child: Builder(
-                builder: (context) => IconButton(
-                  icon: Icon(Icons.menu, color: AppColors.accent, size: 28),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 50, 20, 16),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black.withOpacity(0.05),
+                  //     blurRadius: 10,
+                  //     offset: const Offset(0, 2),
+                  //   ),
+                  // ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Menu Button
+                    Builder(
+                      builder: (context) => _buildModernIconButton(
+                        icon: Icons.menu_rounded,
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                      ),
+                    ),
+                    // Theme Toggle Button
+                    _buildModernIconButton(
+                      icon: AppColors.isDarkMode
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      onPressed: widget.onThemeToggle,
+                    ),
+                  ],
                 ),
               ),
             ),
+          // Desktop Navigation
           if (!isMobile)
             Positioned(
-              top: 16,
-              right: 16,
-              child: Row(
-                children: [
-                  ..._buildNavItems(),
-                  const SizedBox(width: 16),
-                  _buildModernResumeButton(),
-                  const SizedBox(width: 16),
-                  _buildModernThemeButton(),
-                ],
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(32, 24, 32, 16),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black.withOpacity(0.05),
+                  //     blurRadius: 10,
+                  //     offset: const Offset(0, 2),
+                  //   ),
+                  // ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Logo/Brand
+                    SizedBox(),
+                    // Navigation Items
+                    Row(
+                      children: [
+                        ..._buildNavItems(),
+                        const SizedBox(width: 24),
+                        _buildModernIconButton(
+                          icon: AppColors.isDarkMode
+                              ? Icons.light_mode_rounded
+                              : Icons.dark_mode_rounded,
+                          onPressed: widget.onThemeToggle,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildModernIconButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    bool isHovered = false;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return MouseRegion(
+          onEnter: (_) => setState(() => isHovered = true),
+          onExit: (_) => setState(() => isHovered = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: isHovered
+                  ? AppColors.accent.withOpacity(0.1)
+                  : AppColors.cardBackground.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                width: 1,
+                color: isHovered
+                    ? AppColors.accent.withOpacity(0.3)
+                    : AppColors.accent,
+              ),
+              boxShadow: isHovered
+                  ? [
+                      BoxShadow(
+                        color: AppColors.accent.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onPressed,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Icon(icon, color: AppColors.accent, size: 22),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -139,79 +244,41 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
           onEnter: (_) => setState(() => isHovered = true),
           onExit: (_) => setState(() => isHovered = false),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: GestureDetector(
-              onTap: onTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected || isHovered
-                      ? AppColors.accent.withOpacity(0.1)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: isSelected
-                      ? Border.all(color: AppColors.accent.withOpacity(0.3))
-                      : null,
-                ),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelected || isHovered
-                        ? AppColors.accent
-                        : AppColors.textSecondary,
-                    fontSize: 14,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildModernResumeButton() {
-    bool isHovered = false;
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return MouseRegion(
-          onEnter: (_) => setState(() => isHovered = true),
-          onExit: (_) => setState(() => isHovered = false),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {},
-                borderRadius: BorderRadius.circular(25),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.download, color: Colors.white, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        'RESUME',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.8,
-                        ),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected || isHovered
+                          ? AppColors.accent.withOpacity(0.1)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
+                      border: isSelected
+                          ? Border.all(color: AppColors.accent.withOpacity(0.3))
+                          : null,
+                    ),
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: isSelected || isHovered
+                            ? AppColors.accent
+                            : AppColors.textSecondary,
+                        fontSize: 14,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                        letterSpacing: 0.8,
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -219,17 +286,6 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildModernThemeButton() {
-    return IconButton(
-      icon: Icon(
-        AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-        color: AppColors.accent,
-        size: 22,
-      ),
-      onPressed: widget.onThemeToggle,
     );
   }
 
@@ -238,64 +294,121 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       backgroundColor: AppColors.background,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          topRight: Radius.circular(24),
+          bottomRight: Radius.circular(24),
         ),
       ),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          Container(
-            height: 100,
-            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-            child: Icon(Icons.person, color: AppColors.accent, size: 40),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(24),
+            bottomRight: Radius.circular(24),
           ),
-          _buildModernDrawerItem('HOME', Icons.home, () {
-            _scrollToSection(_homeKey, 'HOME');
-            Navigator.pop(context);
-          }),
-          _buildModernDrawerItem('ABOUT', Icons.person, () {
-            _scrollToSection(_aboutKey, 'ABOUT');
-            Navigator.pop(context);
-          }),
-          _buildModernDrawerItem('SERVICES', Icons.work, () {
-            _scrollToSection(_servicesKey, 'SERVICES');
-            Navigator.pop(context);
-          }),
-          _buildModernDrawerItem('PROJECTS', Icons.code, () {
-            _scrollToSection(_portfolioKey, 'PROJECTS');
-            Navigator.pop(context);
-          }),
-          _buildModernDrawerItem('CONTACT', Icons.mail, () {
-            _scrollToSection(_contactKey, 'CONTACT');
-            Navigator.pop(context);
-          }),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: _buildModernResumeButton(),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              color: AppColors.cardBackground.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: ListTile(
-              leading: Icon(
-                AppColors.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                color: AppColors.accent,
-              ),
-              title: Text(
-                AppColors.isDarkMode ? 'Light Mode' : 'Dark Mode',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Container(
+              height: 120,
+              padding: const EdgeInsets.fromLTRB(24, 60, 24, 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.accent.withOpacity(0.1),
+                    Colors.transparent,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-              onTap: widget.onThemeToggle,
+              child: Row(
+                children: [
+                  Center(
+                    child: Icon(
+                      Icons.person_rounded,
+                      color: AppColors.accent,
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    'MENU',
+                    style: TextStyle(
+                      color: AppColors.accent,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            _buildModernDrawerItem('HOME', Icons.home_rounded, () {
+              _scrollToSection(_homeKey, 'HOME');
+              Navigator.pop(context);
+            }),
+            _buildModernDrawerItem('ABOUT', Icons.person_rounded, () {
+              _scrollToSection(_aboutKey, 'ABOUT');
+              Navigator.pop(context);
+            }),
+            _buildModernDrawerItem('SERVICES', Icons.work_rounded, () {
+              _scrollToSection(_servicesKey, 'SERVICES');
+              Navigator.pop(context);
+            }),
+            _buildModernDrawerItem('PROJECTS', Icons.code_rounded, () {
+              _scrollToSection(_portfolioKey, 'PROJECTS');
+              Navigator.pop(context);
+            }),
+            _buildModernDrawerItem('CONTACT', Icons.mail_rounded, () {
+              _scrollToSection(_contactKey, 'CONTACT');
+              Navigator.pop(context);
+            }),
+            const SizedBox(height: 24),
+            // Container(
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   decoration: BoxDecoration(
+            //     gradient: LinearGradient(
+            //       colors: [
+            //         AppColors.accent.withOpacity(0.1),
+            //         AppColors.accent.withOpacity(0.05),
+            //       ],
+            //       begin: Alignment.topLeft,
+            //       end: Alignment.bottomRight,
+            //     ),
+            //     borderRadius: BorderRadius.circular(20),
+            //     border: Border.all(color: AppColors.accent.withOpacity(0.2)),
+            //   ),
+            //   child: ListTile(
+            //     leading: Container(
+            //       padding: const EdgeInsets.all(8),
+            //       decoration: BoxDecoration(
+            //         color: AppColors.accent.withOpacity(0.2),
+            //         borderRadius: BorderRadius.circular(12),
+            //       ),
+            //       child: Icon(
+            //         AppColors.isDarkMode
+            //             ? Icons.light_mode_rounded
+            //             : Icons.dark_mode_rounded,
+            //         color: AppColors.accent,
+            //         size: 20,
+            //       ),
+            //     ),
+            //     title: Text(
+            //       AppColors.isDarkMode ? 'Light Mode' : 'Dark Mode',
+            //       style: TextStyle(
+            //         color: AppColors.textPrimary,
+            //         fontWeight: FontWeight.w600,
+            //         fontSize: 16,
+            //       ),
+            //     ),
+            //     onTap: widget.onThemeToggle,
+            //   ),
+            // ),
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }
@@ -307,24 +420,38 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   ) {
     bool isSelected = _selectedNavItem == title;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.accent.withOpacity(0.1) : null,
-        borderRadius: BorderRadius.circular(12),
+        color: isSelected
+            ? AppColors.accent.withOpacity(0.1)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
         border: isSelected
             ? Border.all(color: AppColors.accent.withOpacity(0.3))
             : null,
       ),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: isSelected ? AppColors.accent : AppColors.textSecondary,
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.accent.withOpacity(0.2)
+                : AppColors.cardBackground.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            color: isSelected ? AppColors.accent : AppColors.textSecondary,
+            size: 20,
+          ),
         ),
         title: Text(
           title,
           style: TextStyle(
             color: isSelected ? AppColors.accent : AppColors.textSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            fontSize: 16,
+            letterSpacing: 0.5,
           ),
         ),
         trailing: isSelected
@@ -334,6 +461,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 decoration: BoxDecoration(
                   color: AppColors.accent,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.accent.withOpacity(0.3),
+                      blurRadius: 4,
+                    ),
+                  ],
                 ),
               )
             : null,
