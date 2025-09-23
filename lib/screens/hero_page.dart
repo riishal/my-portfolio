@@ -3,6 +3,8 @@ import 'package:rishal/utils/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
+import 'package:url_launcher/url_launcher.dart';
+
 class HeroSection extends StatefulWidget {
   final GlobalKey homeKey;
   final bool isMobile;
@@ -37,6 +39,14 @@ class _HeroSectionState extends State<HeroSection>
     'Cross-Platform Specialist',
   ];
   int _currentRoleIndex = 0;
+
+  // Social media URLs
+  final String linkedinUrl =
+      'https://www.linkedin.com/in/rishal-muhammed-9bb017262/';
+  final String whatsappUrl = 'https://wa.me/917592895143';
+  final String instagramUrl = 'https://www.instagram.com/riishal._/';
+  final String phoneUrl = 'tel:+917592895143';
+  final String githubUrl = 'https://github.com/riishal/';
 
   @override
   void initState() {
@@ -115,6 +125,51 @@ class _HeroSectionState extends State<HeroSection>
         });
       });
     });
+  }
+
+  // Function to launch URLs
+  Future<void> _launchURL(String url) async {
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      print('Error launching URL: $e');
+      // You can show a snackbar or dialog here to inform the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not open the link'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Function to handle email
+  void _makePhonecall() {
+    _launchURL(phoneUrl);
+  }
+
+  // Function to handle WhatsApp
+  void _openWhatsApp() {
+    _launchURL(whatsappUrl);
+  }
+
+  // Function to handle LinkedIn
+  void _openLinkedIn() {
+    _launchURL(linkedinUrl);
+  }
+
+  // Function to handle Instagram
+  void _openInstagram() {
+    _launchURL(instagramUrl);
+  }
+
+  // Function to handle GitHub
+  void _openGitHub() {
+    _launchURL(githubUrl);
   }
 
   @override
@@ -630,27 +685,28 @@ class _HeroSectionState extends State<HeroSection>
                         _buildModernSocialIcon(
                           'assets/images/github.svg',
                           'GitHub',
-                          () {},
+                          _openGitHub,
                         ),
                         _buildModernSocialIcon(
                           'assets/images/linkedin.svg',
                           'LinkedIn',
-                          () {},
+                          _openLinkedIn,
                         ),
                         _buildModernSocialIcon(
                           'assets/images/instagram.svg',
                           'Instagram',
-                          () {},
+                          _openInstagram,
                         ),
-                        _buildModernSocialIcon(
-                          'assets/images/email.svg',
-                          'Email',
-                          () {},
-                        ),
+
                         _buildModernSocialIcon(
                           'assets/images/whatsapp.svg',
                           'WhatsApp',
-                          () {},
+                          _openWhatsApp,
+                        ),
+                        _buildModernSocialIcon(
+                          'assets/images/phone.svg',
+                          'Phone',
+                          _makePhonecall,
                         ),
                       ],
                     ),
@@ -769,31 +825,32 @@ class _HeroSectionState extends State<HeroSection>
                         _buildModernSocialIcon(
                           'assets/images/github.svg',
                           'GitHub',
-                          () {},
+                          _openGitHub,
                         ),
                         SizedBox(width: 20),
                         _buildModernSocialIcon(
                           'assets/images/linkedin.svg',
                           'LinkedIn',
-                          () {},
+                          _openLinkedIn,
                         ),
                         SizedBox(width: 20),
                         _buildModernSocialIcon(
                           'assets/images/instagram.svg',
                           'Instagram',
-                          () {},
-                        ),
-                        SizedBox(width: 20),
-                        _buildModernSocialIcon(
-                          'assets/images/email.svg',
-                          'Email',
-                          () {},
+                          _openInstagram,
                         ),
                         SizedBox(width: 20),
                         _buildModernSocialIcon(
                           'assets/images/whatsapp.svg',
                           'WhatsApp',
-                          () {},
+                          _openWhatsApp,
+                        ),
+
+                        SizedBox(width: 20),
+                        _buildModernSocialIcon(
+                          'assets/images/phone.svg',
+                          'Phone',
+                          _makePhonecall,
                         ),
                       ],
                     ),
