@@ -221,7 +221,7 @@ class _AboutSectionState extends State<AboutSection>
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage('assets/images/lap.jpg'),
+                    image: AssetImage('assets/images/image9.png'),
                   ),
                 ),
               ),

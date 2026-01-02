@@ -62,7 +62,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             controller: _scrollController,
             child: Column(
               children: [
-                HeroSection(homeKey: _homeKey, isMobile: isMobile),
+                HeroSection(
+                  homeKey: _homeKey,
+                  isMobile: isMobile,
+                  onViewWork: () => _scrollToSection(_portfolioKey, 'PROJECTS'),
+                  onGetInTouch: () => _scrollToSection(_contactKey, 'CONTACT'),
+                ),
                 AboutSection(aboutKey: _aboutKey, isMobile: isMobile),
                 ModernServicesSection(
                   servicesKey: _servicesKey,

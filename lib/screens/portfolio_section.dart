@@ -23,9 +23,9 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
   final List<String> _filters = [
     'All',
     'Mobile Apps',
-    'Web Apps',
-    'UI/UX',
-    'Open Source',
+    'Management Systems',
+    'UI/UX Design',
+    'Business Solutions',
   ];
 
   @override
@@ -135,6 +135,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
     required List<String> technologies,
     required Color primaryColor,
     required IconData icon,
+    required String imageUrl,
     required int index,
   }) {
     bool _isHovered = false;
@@ -215,20 +216,62 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                       ),
                       child: Stack(
                         children: [
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              return CustomPaint(
-                                painter: ProjectBackgroundPainter(
-                                  color: primaryColor.withOpacity(0.1),
-                                  isHovered: _isHovered,
-                                ),
-                                size: Size(
-                                  constraints.maxWidth,
-                                  constraints.maxHeight,
-                                ),
-                              );
-                            },
+                          // Background Image
+                          Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(24),
+                                topRight: Radius.circular(24),
+                              ),
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: primaryColor.withOpacity(0.1),
+                                    child: Icon(
+                                      icon,
+                                      color: primaryColor,
+                                      size: 50,
+                                    ),
+                                  );
+                                },
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                                        color: primaryColor.withOpacity(0.1),
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                              ),
+                            ),
                           ),
+                          // Gradient Overlay
+                          Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  primaryColor.withOpacity(
+                                    _isHovered ? 0.3 : 0.1,
+                                  ),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                          ),
+                          // Icon in center
                           Center(
                             child: AnimatedContainer(
                               duration: Duration(milliseconds: 300),
@@ -237,7 +280,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    primaryColor,
+                                    primaryColor.withOpacity(0.9),
                                     primaryColor.withOpacity(0.7),
                                   ],
                                 ),
@@ -262,6 +305,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                               ),
                             ),
                           ),
+                          // Category Badge
                           Positioned(
                             top: 16,
                             right: 16,
@@ -271,7 +315,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: primaryColor.withOpacity(0.9),
+                                color: Colors.black.withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -447,58 +491,69 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> projects = [
       {
-        'title': 'Awesome Snackbar Content',
+        'title': 'ECSO - Cargo Delivery App',
         'description':
-            'A Flutter package for creating beautiful and customizable snackbars with advanced animations.',
-        'category': 'Open Source',
-        'technologies': ['Flutter', 'Dart', 'Animation'],
+            'Complete cargo delivery management system with bill generation, expense tracking, delivery monitoring, and receipt printing capabilities.',
+        'category': 'Business Solutions',
+        'technologies': ['Flutter', 'Firebase', 'PDF Generation', 'Tracking'],
         'color': Colors.blue,
-        'icon': Icons.notifications_active,
+        'icon': Icons.local_shipping,
+        'imageUrl':
+            'https://img.freepik.com/premium-photo/ecommerce-concept-transportation-shipment-delivery-by-truck-3d-illustration_68971-1446.jpg',
       },
       {
-        'title': 'Holy Quran App',
+        'title': 'Inspec - Employee Quality Timer',
         'description':
-            'Complete Quran reading app with audio recitation, translations, and bookmarking features.',
-        'category': 'Mobile App',
-        'technologies': ['Flutter', 'SQLite', 'Audio'],
+            'Advanced employee productivity management system with quality time tracking, task completion monitoring, and performance analytics.',
+        'category': 'Management Systems',
+        'technologies': ['Flutter', 'Timer API', 'Analytics', 'Reports'],
         'color': Colors.green,
-        'icon': Icons.book,
+        'icon': Icons.timer,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
       },
       {
-        'title': 'MedKit Health App',
+        'title': 'Gym Management System',
         'description':
-            'Comprehensive healthcare management system with appointment booking and medical records.',
-        'category': 'Mobile App',
-        'technologies': ['Flutter', 'Firebase', 'API'],
+            'Comprehensive gym management app with customer tracking, membership expiry notifications, receipt printing, and payment management.',
+        'category': 'Management Systems',
+        'technologies': ['Flutter', 'SQLite', 'Notifications', 'Print'],
         'color': Colors.red,
-        'icon': Icons.medical_services,
+        'icon': Icons.fitness_center,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
       },
       {
-        'title': 'Personal Portfolio',
+        'title': 'Site Diary - Finance Tracker',
         'description':
-            'Modern responsive portfolio website showcasing projects and skills with stunning animations.',
-        'category': 'Web App',
-        'technologies': ['Flutter Web', 'Responsive', 'Animation'],
-        'color': Colors.purple,
-        'icon': Icons.person,
-      },
-      {
-        'title': 'E-Commerce Dashboard',
-        'description':
-            'Admin dashboard for managing products, orders, and analytics with beautiful charts.',
-        'category': 'Web App',
-        'technologies': ['Flutter', 'Charts', 'API'],
+            'Complete site management solution with cash receipts, payment tracking, expense reports, employee attendance, and advance payment management.',
+        'category': 'Business Solutions',
+        'technologies': ['Flutter', 'Financial API', 'Reports', 'Attendance'],
         'color': Colors.orange,
-        'icon': Icons.dashboard,
+        'icon': Icons.account_balance_wallet,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
       },
       {
-        'title': 'Chat App UI Kit',
+        'title': 'Food Booking App UI',
         'description':
-            'Beautiful chat interface components with modern design patterns and smooth animations.',
-        'category': 'UI/UX',
-        'technologies': ['Flutter', 'UI Design', 'Animation'],
+            'Modern food ordering interface with restaurant discovery, location tracking, menu browsing, and seamless ordering experience.',
+        'category': 'UI/UX Design',
+        'technologies': ['Flutter', 'Maps API', 'UI Design', 'Location'],
+        'color': Colors.purple,
+        'icon': Icons.restaurant,
+        'imageUrl':
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+      },
+      {
+        'title': 'Albaik - Employee Management',
+        'description':
+            'Enterprise-level employee attendance system with driver location tracking, production monitoring, comprehensive reporting, and workforce analytics.',
+        'category': 'Management Systems',
+        'technologies': ['Flutter', 'GPS Tracking', 'Analytics', 'Enterprise'],
         'color': Colors.teal,
-        'icon': Icons.chat,
+        'icon': Icons.business,
+        'imageUrl': '',
       },
     ];
 
@@ -566,7 +621,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                   Container(
                     constraints: BoxConstraints(maxWidth: 600),
                     child: Text(
-                      'Here are some of my recent projects showcasing different skills and technologies in mobile and web development.',
+                      'Here are some of my recent projects showcasing business solutions, management systems, and modern mobile applications.',
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: widget.isMobile ? 16 : 18,
@@ -621,6 +676,7 @@ class _ModernPortfolioSectionState extends State<ModernPortfolioSection>
                         technologies: project['technologies'],
                         primaryColor: project['color'],
                         icon: project['icon'],
+                        imageUrl: project['imageUrl'],
                         index: entry.key,
                       );
                     }).toList(),

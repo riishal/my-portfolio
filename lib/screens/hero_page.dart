@@ -8,9 +8,16 @@ import 'package:url_launcher/url_launcher.dart';
 class HeroSection extends StatefulWidget {
   final GlobalKey homeKey;
   final bool isMobile;
+  final VoidCallback onViewWork;
+  final VoidCallback onGetInTouch;
 
-  const HeroSection({required this.homeKey, required this.isMobile, Key? key})
-    : super(key: key);
+  const HeroSection({
+    required this.homeKey,
+    required this.isMobile,
+    Key? key,
+    required this.onViewWork,
+    required this.onGetInTouch,
+  }) : super(key: key);
 
   @override
   _HeroSectionState createState() => _HeroSectionState();
@@ -528,7 +535,7 @@ class _HeroSectionState extends State<HeroSection>
       child: Container(
         key: widget.homeKey,
         height: widget.isMobile
-            ? MediaQuery.of(context).size.height * 0.95
+            ? MediaQuery.of(context).size.height * 0.99
             : MediaQuery.of(context).size.height,
         child: Stack(
           children: [
@@ -670,8 +677,12 @@ class _HeroSectionState extends State<HeroSection>
                       runSpacing: 12,
                       alignment: WrapAlignment.center,
                       children: [
-                        _buildModernButton('View Projects', Icons.work, () {}),
-                        _buildModernButton('Contact Me', Icons.mail, () {}),
+                        _buildModernButton('View Projects', Icons.work, () {
+                          widget.onViewWork();
+                        }),
+                        _buildModernButton('Contact Me', Icons.mail, () {
+                          widget.onGetInTouch();
+                        }),
                       ],
                     ),
                   ),
@@ -811,9 +822,13 @@ class _HeroSectionState extends State<HeroSection>
                   _buildFloatingElement(
                     Row(
                       children: [
-                        _buildModernButton('View My Work', Icons.work, () {}),
+                        _buildModernButton('View My Work', Icons.work, () {
+                          widget.onViewWork();
+                        }),
                         SizedBox(width: 20),
-                        _buildModernButton('Get In Touch', Icons.mail, () {}),
+                        _buildModernButton('Get In Touch', Icons.mail, () {
+                          widget.onGetInTouch();
+                        }),
                       ],
                     ),
                     Duration(milliseconds: 800),

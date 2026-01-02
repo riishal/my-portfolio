@@ -528,7 +528,7 @@ class _ModernContactSectionState extends State<ModernContactSection>
                       _buildContactCard(
                         icon: Icons.location_on,
                         title: 'Location',
-                        value: 'Islamabad, Pakistan',
+                        value: 'Areekode, Malappuram',
                         subtitle: 'Available for remote work',
                         gradientColors: [Colors.blue, Colors.blueAccent],
                         onTap: () {},
@@ -537,7 +537,7 @@ class _ModernContactSectionState extends State<ModernContactSection>
                       _buildContactCard(
                         icon: Icons.phone,
                         title: 'Phone',
-                        value: '+92 346 0159869',
+                        value: '+91 7592895143',
                         subtitle: 'Mon-Fri 9AM-6PM',
                         gradientColors: [Colors.green, Colors.greenAccent],
                         onTap: () {},
@@ -546,7 +546,7 @@ class _ModernContactSectionState extends State<ModernContactSection>
                       _buildContactCard(
                         icon: Icons.email,
                         title: 'Email',
-                        value: 'rishal@example.com',
+                        value: 'riishaltt@gmail.com',
                         subtitle: '24/7 Available',
                         gradientColors: [Colors.purple, Colors.purpleAccent],
                         onTap: () {},
