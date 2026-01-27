@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'SF Pro Display',
+        fontFamily: 'Inter',
         scaffoldBackgroundColor: AppColors.background,
         textTheme: TextTheme(
           headlineLarge: TextStyle(

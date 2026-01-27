@@ -8,8 +8,8 @@ class AppColors {
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightTextPrimary = Color(0xFF1A1D21);
   static const Color lightTextSecondary = Color(0xFF6B7280);
-  static const Color lightAccent = Color(0xFF4361EE);
-  static const Color lightAccentVariant = Color(0xFF3A0CA3);
+  static const Color lightAccent = Color(0xFF007BFF); // New Accent Color
+  static const Color lightAccentVariant = Color(0xFF0056b3);
   static const Color lightAccentLight = Color(0xFFE6F0FF);
   static const Color lightCardBackground = Color(0xFFFFFFFF);
   static const Color lightShadow = Color(0x0A000000);
@@ -27,8 +27,8 @@ class AppColors {
   static const Color darkSurface = Color(0xFF1E1E1E);
   static const Color darkTextPrimary = Color(0xFFE0E0E0);
   static const Color darkTextSecondary = Color(0xFFA0A0A0);
-  static const Color darkAccent = Color(0xFFBB86FC);
-  static const Color darkAccentVariant = Color(0xFF6200EA);
+  static const Color darkAccent = Color(0xFF00E5FF); // New Accent Color
+  static const Color darkAccentVariant = Color(0xFF00B8D4);
   static const Color darkAccentLight = Color(0xFF2D2D2D);
   static const Color darkCardBackground = Color(0xFF1E1E1E);
   static const Color darkShadow = Color(0x40000000);
